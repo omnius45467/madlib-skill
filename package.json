@@ -1,5 +1,10 @@
 {
   "name": "alexa_boilerplate",
+  "license": "UNLICENSED",
+  "repository" :
+  	{ "type" : "git",
+		"url" : "https://github.com/npm/npm.git"
+  	},
   "version": "v1.0.0",
   "description": "A skill for Amazon Alexa",
   "scripts": {},
