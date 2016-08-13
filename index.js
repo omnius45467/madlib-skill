@@ -20,6 +20,7 @@ app.intent('number',
   },
   function(request,response) {
     var number = request.slot('number');
+	  response.session("test", 42);
     response.say('You asked for the number '+number);
     response.shouldEndSession(true);
     response.send();
@@ -38,7 +39,7 @@ app.intent('checkStatus',
   	},
 	function(request,response) {
 		setTimeout(function() {		// simulate an async request
-
+			response.session("test", "omnius");
 	        // This is async and will run after a brief delay
 	        response.say('Status is operational, mam!');
 	    
