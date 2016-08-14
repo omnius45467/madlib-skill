@@ -1,55 +1,87 @@
 var alexa = require('alexa-app');
 var app = new alexa.app();
 
+var paragraph = [
+	request.session('name')+" is the only "+request.session('object')+" who is able to see the "+request.session('thing')+" of the "+request.session('subject')+".",
+	"The "+request.session('subject')+'is the '+request.session('object')+"of"+request.session('name')
+];
+
 /**
  * LaunchRequest.
  */
 app.launch(function(request,response) {
-	response.say('Hey there fancy pants!');
-	response.card("Hey there fancy pants!","This is an example card");
+
+	response.say("Welcome to the madlib skill. ");
+	response.say("To use this skill you will need to set the values for various parts of speech.");
+	response.reprompt("Are you ready to start the game?");
+
+	response.session('name','');
+	response.session('subject','');
+	response.session('object','');
+
+	response.card({
+		type:    "Simple",
+		title:   "Madlib Skill",  //this is not required for type Simple 
+		content: "Welcome to the madlib skill"
+	});
+
+});
+app.intent('SetNameIntent', {
+	'utterances':[ 'set the name {name}' ]
+}, function(request, response){
+	var name = request.slot('name');
+	response.session('name', name);
+	response.say('setting the name to '+name);
+	response.reprompt('what do you want to set the name to?');
+	response.send();
+});
+app.intent('SetSubjectIntent', {
+	'utterances':[ 'set the subject {subject}' ]
+}, function(request, response){
+	var subject = request.slot('subject');
+	response.session('subject', subject);
+	response.say('setting the subject to '+subject);
+	response.reprompt('what do you want to set the subject to?');
+	response.send();
+});
+app.intent('SetObjectIntent', {
+	'utterances':[ 'set the object {object}' ]
+}, function(request, response){
+	var object = request.slot('object');
+	response.session('object', object);
+	response.say('setting the object to '+object);
+	response.reprompt('what do you want to set the object to?');
+	response.send();
 });
 
-/**
- * IntentRequest.
- */
-app.intent('number',
-  {
-    'slots':{'number':'NUMBER'},
-    'utterances':[ 'say the number {1-100|number}' ]
-  },
-  function(request,response) {
-    var number = request.slot('number');
-	  response.session("test", 42);
-    response.say('You asked for the number '+number);
-    response.shouldEndSession(true);
-    response.send();
-  }
-);
+app.intent('ReadMadlibIntent', {
 
-/**
- * IntentRequest w/ asynchronous response.
- */
-app.intent('checkStatus', 
-	{
-    	'utterances':[ 
-    		'status check', 'what is the status', 'tell me the status'
-    	]
-  	},
-	function(request,response) {
-		setTimeout(function() {		// simulate an async request
-			response.session("test", "omnius");
-	        // This is async and will run after a brief delay
-	        response.say('Status is operational, mam!');
-	    
-	        // Must call send to end the original request
-	        response.send();
-		
-		}, 250);
-
-	    // Return false immediately so alexa-app doesn't send the response
-	    return false;
+}, function(request, response){
+	if(request.session('name') != '' && request.session('subject') != '' && request.session('object')!= '' ){
+		response.say(paragraph[Math.floor(Math.random()*paragraph.length)]);
+		response.shouldEndSession(true);
+		response.send();
+	}else{
+		if(!request.session('name')){
+			response.say('It looks like you have not selected a persons name just yet. Set a name by saying ');
+			response.say('set the name, and the name you want to enter. ');
+			response.reprompt('set the name, and the name you want to enter ');
+			response.send();
+		}
+		if(!request.session('object')){
+			response.say('It looks like you have not selected a object just yet. Set a object by saying ');
+			response.say('set the object, and the object you want to enter. ');
+			response.reprompt('set the object, and the object you want to enter ');
+			response.send();
+		}
+		if(!request.session('subject')){
+			response.say('It looks like you have not selected a subject just yet. Set a subject by saying ');
+			response.say('set the subject, and the subject you want to enter. ');
+			response.reprompt('set the subject, and the subject you want to enter. ');
+			response.send();
+		}
 	}
-);
+});
 
 /**
  * Error handler for any thrown errors.
