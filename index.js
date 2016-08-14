@@ -9,7 +9,6 @@ app.launch(function(request,response) {
 	response.card("Hey there fancy pants!","This is an example card");
 });
 
-
 /**
  * IntentRequest.
  */
@@ -26,7 +25,6 @@ app.intent('number',
     response.send();
   }
 );
-
 
 /**
  * IntentRequest w/ asynchronous response.
@@ -52,7 +50,6 @@ app.intent('checkStatus',
 	    return false;
 	}
 );
-
 
 /**
  * Error handler for any thrown errors.
